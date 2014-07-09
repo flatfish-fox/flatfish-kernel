@@ -1,0 +1,58 @@
+From 8cdfdfef6da9bd6997a6ab515c1fd2a2c9d297e6 Mon Sep 17 00:00:00 2001
+From: Flatfish <flatfish.fox@gmail.com>
+Date: Tue, 8 Jul 2014 15:02:34 +0800
+Subject: [PATCH] Bug 911121 - [flatfish] USB/charger detection can not work
+
+---
+ drivers/power/axp_power/axp22-sply.c | 27 ++++++---------------------
+ 1 file changed, 6 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/power/axp_power/axp22-sply.c b/drivers/power/axp_power/axp22-sply.c
+index a182b03..e414de9 100755
+--- a/drivers/power/axp_power/axp22-sply.c
++++ b/drivers/power/axp_power/axp22-sply.c
+@@ -442,35 +442,20 @@ static enum power_supply_property axp_usb_props[] = {
+   POWER_SUPPLY_PROP_CURRENT_NOW,
+ };
+ 
+-static int axp_battery_check_status_counter=0;
+ static void axp_battery_check_status(struct axp_charger *charger,
+             union power_supply_propval *val)
+ {
+   if (charger->bat_det) {
+     if (charger->ext_valid){
+-    	if( charger->rest_vol == 100){
+-	       	val->intval = POWER_SUPPLY_STATUS_FULL;
+-		axp_battery_check_status_counter|=0x4;
+-	}
+-    	else if((charger->charge_on) && (charger->bat_current_direction == 1)){
+-		if( (axp_battery_check_status_counter&0x3) == 0x3 ) {
+-    			val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-		}
+-		else{
+-	    		val->intval = POWER_SUPPLY_STATUS_CHARGING;
+-			axp_battery_check_status_counter|=0x1;
+-		}
+-	}
+-    	else{
++    	if( charger->rest_vol == 100)
++        val->intval = POWER_SUPPLY_STATUS_FULL;
++    	else if((charger->charge_on) && (charger->bat_current_direction == 1))
++    		val->intval = POWER_SUPPLY_STATUS_CHARGING;
++    	else
+     		val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-		if( (axp_battery_check_status_counter&0x1) != 0 )
+-			axp_battery_check_status_counter|=0x2;
+-	}
+     }
+-    else{
++    else
+       val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
+-      axp_battery_check_status_counter=0;
+-    }
+   }
+   else
+     val->intval = POWER_SUPPLY_STATUS_FULL;
+-- 
+2.0.1
+
