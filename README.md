@@ -17,7 +17,7 @@ The following steps will allow you to compile and update your Flatfish boot imag
  * Find the **["External links"]** and get into **["Allwinner A31 kernel source code"]** repository 
  * Find the revision tag: **["A31-Android4.2-v3.2"]** and get the snapshot, extract the tarball, move and rename the linux source folder to **$WORKSPACE/linux**
  
-2. Download Flatfish kernel patche and ramdisk.img
+2. Download Flatfish kernel patch and ramdisk.img
  ```
  cd $WORKSPACE
  git clone https://github.com/flatfish-fox/flatfish-kernel.git 
